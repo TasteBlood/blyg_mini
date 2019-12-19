@@ -1,0 +1,75 @@
+<style lang="less">
+::-webkit-scrollbar {
+  width: 2px;
+  height: 4px;
+  color:#ffffff;
+}
+
+/*定义滚动条轨道 内阴影+圆角*/
+::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0);
+  border-radius: 10px;
+  background-color:#FFFFFF;
+}
+
+/*定义滑块 内阴影+圆角*/
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
+  background-color:#212121;
+}
+.ic-32 {
+  width: 32rpx;
+  height: 32rpx;
+}
+
+.ic-36 {
+  width: 36rpx;
+  height: 36rpx;
+}
+
+.ic-48 {
+  width: 48rpx;
+  height: 48rpx;
+}
+
+.ic-64 {
+  width: 64rpx;
+  height: 64rpx;
+}
+</style>
+
+<script>
+import wepy from 'wepy';
+import 'wepy-async-function';
+
+export default class extends wepy.app {
+  config = {
+    pages: [
+      'pages/index',
+      'pages/goods_collect',
+      'pages/class_collect',
+      'pages/class_store',
+      'pages/goods_store',
+    ],
+    window: {
+      backgroundTextStyle: 'light',
+      navigationBarBackgroundColor: '#fff',
+      navigationBarTitleText: '百利优购',
+      navigationBarTextStyle: 'black'
+    }
+  };
+
+  data = {
+    brands:null
+  };
+
+  constructor() {
+    super();
+  }
+
+  onLaunch() {}
+}
+</script>

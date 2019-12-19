@@ -1,0 +1,103 @@
+<style lang="less" scoped>
+.search-bar {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  padding: 10rpx;
+
+  .search {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    width: 72%;
+    input {
+      width: 70%;
+      padding: 5rpx;
+      border-bottom: 2rpx solid #212121;
+    }
+  }
+  .btn-search {
+    padding: 10rpx 20rpx 10rpx 20rpx;
+    background-color: #212121;
+    border-radius: 2rpx;
+    color: #f1f1f1;
+    box-shadow: 0rpx 2rpx 8rpx 2rpx #e1e1e1;
+  }
+  .btn-search:active {
+    background-color: #414141;
+  }
+}
+.list {
+  display: flex;
+  flex-direction: column;
+
+  .item {
+    display: flex;
+    flex-direction: column;
+    padding: 20rpx;
+  }
+}
+</style>
+<template>
+    <view>
+        <view class="search-bar">
+            <view class="search">
+                <input placeholder="关键词搜索" placeholder-style="#919191">
+                <view class="btn-search" style="margin-left:10rpx;">搜索</view>
+            </view>
+            <view class="btn-search">扫码搜</view>
+        </view>
+        <scroll-view scroll-y scroll-with-animation style="height:{{height}}px">
+            <view class="list">
+                <view class="item" wx:for="{{num}}" wx:key="{{index}}">
+                    <view style="font-weight:bold;font-size:36rpx;">康师傅红烧牛肉面</view>
+                    <view
+                        style="margin-top:10rpx;display:flex;flex-direction:row;align-items:center;box-sizing:border-box;"
+                    >
+                        <view style="width:50%;">规格:
+                            <text style="font-weight:bold;">桶装/500g</text>
+                        </view>
+                        <view style="width:50%;">售价(￥):
+                            <text style="font-weight:bold;">4.5</text>
+                        </view>
+                    </view>
+                    <view style="margin-top:10rpx;">品牌:
+                        <text>康师傅方便面</text>
+                    </view>
+                    <view style="margin-top:10rpx;">条码:
+                        <text>6223344556677</text>
+                    </view>
+                    <view style="margin-top:10rpx;width:100%;height:2rpx;background-color:#212121"></view>
+                </view>
+            </view>
+        </scroll-view>
+    </view>
+</template>
+<script>
+import wepy from 'wepy';
+export default class GoodsStore extends wepy.page {
+  config = {
+    navigationBarTitleText: '商品库',
+    disableScroll: true
+  };
+  data = {
+    num: 20,
+    height: 0
+  };
+  methods = {};
+  onLoad() {
+    let self = this;
+    wepy.getSystemInfo({
+      success: res => {
+        console.log(res);
+        let query = wx.createSelectorQuery();
+        query.select('.search-bar').boundingClientRect((rect)=>{
+            console.log(rect)
+            self.height = res.windowHeight - rect.height
+            self.$apply();
+        }).exec();
+      }
+    });
+  }
+}
+</script>

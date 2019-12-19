@@ -1,0 +1,90 @@
+<style lang="less" scoped>
+.top-menu {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.btn-save {
+  width: 60%;
+  height: 80rpx;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  color: #f1f1f1;
+  background-color: #212121;
+  border-radius: 2rpx;
+  box-shadow: 2rpx 4rpx 8rpx 2rpx #e1e1e1;
+}
+.btn-save:active {
+  background-color: #414141;
+}
+
+.btn-store {
+  width: 60%;
+  height: 80rpx;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  border-radius: 2rpx;
+  border: 2rpx solid #212121;
+}
+.btn-store:active{
+    background-color: #f4f4f4;
+}
+</style>
+<template>
+    <view>
+        <view style="display:flex;flex-direction:row;justify-content:center;padding:20rpx;">
+            <input
+                placeholder="请输入品牌名称"
+                style="width:80%;font-size:38rpx;text-align:center;border-bottom:2rpx solid #212121;padding:10rpx;"
+                placeholder-style="color:#919191"
+                @input="onInput"
+                value="{{name}}"
+            >
+        </view>
+        <view style="display:flex;flex-direction:row;justify-content:center;margin-top:40rpx">
+            <view class="btn-save" @tap='onSave'>保存</view>
+        </view>
+        <view style="display:flex;flex-direction:row;justify-content:center;margin-top:40rpx">
+            <view class="btn-store" @tap='onClassStore'>品牌库</view>
+        </view>
+    </view>
+</template>
+<script>
+import wepy from 'wepy';
+import {addBrands} from '../utils/api';
+export default class ClassCollect extends wepy.page {
+  config = {
+    navigationBarTitleText: '品牌采集'
+  };
+  data = {
+    name:''
+  };
+  methods = {
+    onInput(e){
+      this.name = e.detail.value;
+    },
+    async onSave(){
+      if(!this.name) return;
+      let res = await addBrands(this.name)
+      if(res.status===1){
+        wx.showToast({
+          title: '添加成功',
+          icon: 'none'
+        });
+        this.name = '';
+        this.$apply();
+      }
+    },
+    onClassStore(){
+      wepy.navigateTo({ url: 'class_store' });
+    }
+  };
+  onLoad() {}
+}
+</script>

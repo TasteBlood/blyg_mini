@@ -1,0 +1,13 @@
+{
+  "description": "兰州云创意自研项目百利优购市场采价项目",
+  "setting": {
+    "urlCheck": true,
+    "es6": false,
+    "postcss": false,
+    "minified": false
+  },
+  "compileType": "miniprogram",
+  "appid": "wxc794e10711a99f9b",
+  "projectname": "ycy_blyg_price",
+  "miniprogramRoot": "./dist"
+}

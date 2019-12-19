@@ -1,0 +1,324 @@
+<style lang="less" scoped>
+.top-menu {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 20rpx;
+
+  .item {
+    width: 60%;
+    height: 80rpx;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    color: #f1f1f1;
+    background-color: #212121;
+    box-shadow: 0 0 8rpx 2rpx #e1e1e1;
+    border-radius: 2rpx;
+    box-shadow: 2rpx 4rpx 8rpx 2rpx #e1e1e1;
+  }
+  .item:active {
+    background-color: #414141;
+  }
+}
+
+.btn-save {
+  width: 60%;
+  height: 80rpx;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  color: #f1f1f1;
+  background-color: #212121;
+  border-radius: 2rpx;
+  box-shadow: 2rpx 4rpx 8rpx 2rpx #e1e1e1;
+}
+.btn-save:active {
+  background-color: #414141;
+}
+
+.line {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 20rpx;
+  margin-top: 10rpx;
+  justify-content: flex-start;
+
+  .label {
+    color: #414141;
+    font-weight: bold;
+  }
+  .input {
+    padding: 10rpx;
+    border-bottom: 2rpx solid #212121;
+    width: 75%;
+    margin-left: 10rpx;
+  }
+
+  .input-view {
+    padding: 10rpx;
+    border-bottom: 2rpx solid #212121;
+    width: 75%;
+    margin-left: 10rpx;
+  }
+  .input-view:active {
+    background-color: #f1f1f1;
+  }
+}
+
+.line-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20rpx;
+  margin-top: 10rpx;
+  justify-content: center;
+}
+.btn-clear{
+  width: 60%;
+  height: 80rpx;
+  border-radius: 4rpx;
+  border:solid 2rpx #212121;
+  color: #212121;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20rpx;
+}
+.btn-clear:active{
+  background-color: #f4f4f4;
+}
+</style>
+<template>
+  <view>
+    <view class="top-menu">
+      <view class="item" @tap="onItemClick" data-type="scan">
+        <text>条码扫描</text>
+      </view>
+      <!-- <view class="item" style="margin-left:40rpx;" @tap="onItemClick" data-type="goods">
+        <text>商品库</text>
+      </view> -->
+    </view>
+    <view class="line">
+      <text class="label">名称</text>
+      <input
+        class="input"
+        @input="onInput"
+        data-type="name"
+        placeholder="请输入商品名称"
+        placeholder-style="color:#919191"
+        value="{{name}}"
+      >
+    </view>
+    <view class="line">
+      <text class="label">条码</text>
+      <input
+        class="input"
+        @input="onInput"
+        data-type="code"
+        placeholder="请输入商品条码"
+        placeholder-style="color:#919191"
+        type='number'
+        value="{{code}}"
+      >
+    </view>
+    <view class="line">
+      <text class="label">单位</text>
+      <view class="input-view" style="display:flex;flex-direction:row;align-items:center">
+        <picker style="width:600rpx;" @change='onUnitChange' range='{{units}}' range-key='name'>{{unit?unit.name:'请选择单位'}}</picker>
+        <image src="../img/ic_next.png" class="ic-36" mode="aspectFill">
+      </view>
+    </view>
+    <view class="line">
+      <text class="label">规格</text>
+      <input
+        class="input"
+        @input="onInput"
+        data-type="class"
+        placeholder="请输入商品规格"
+        placeholder-style="color:#919191"
+        value="{{className}}"
+      >
+    </view>
+    <view class="line">
+      <text class="label">售价(￥)</text>
+      <input
+        class="input"
+        @input="onInput"
+        data-type="price"
+        placeholder="请输入零售价"
+        placeholder-style="color:#919191"
+        type='number'
+        value="{{price}}"
+      >
+    </view>
+    <view class="line">
+      <text class="label">品牌</text>
+      <view class="input-view" style="display:flex;flex-direction:row;align-items:center" @tap='onBrandsClick'>
+        <view style="width:600rpx;">{{brands?brands.name:'请选择品牌'}}</view>
+        <image src="../img/ic_next.png" class="ic-36" mode="aspectFill">
+      </view>
+    </view>
+    <view class="line">
+      <text class="label">分类</text>
+      <view class="input-view" style="display:flex;flex-direction:row;align-items:center" @tap='onCateClick'>
+        <view style="width:600rpx;">{{cateTwo?(cateOne.name+'/'+cateTwo.name):'请选择分类'}}</view>
+        <image src="../img/ic_next.png" class="ic-36" mode="aspectFill">
+      </view>
+    </view>
+    <view class="line-center">
+      <view class="btn-save" @tap='onSave'>保 存</view>
+      <view class="btn-clear" @tap='onClear'>清 空</view>
+    </view>
+
+    <categorySelector :show.sync='showCate' @onCateChoose.user='onCateChoose' @onClose.user='onClose'></categorySelector>
+  </view>
+</template>
+<script>
+import wepy from 'wepy';
+import {findGoods,getGoodsInfo, addGoods,getUnit} from '../utils/api';
+import CategorySelector from '../components/category_selector';
+export default class GoodsCollect extends wepy.page {
+  config = {
+    navigationBarTitleText: '商品采集'
+  };
+  data = {
+    name: '',
+    code: '',
+    brands:null,
+    price: '',
+    className:'',
+    showCate:false,
+    cateOne:null,
+    cateTwo:null,
+    unit:null,
+    units:[]
+  };
+
+  components = {
+    categorySelector:CategorySelector
+  }
+
+  methods = {
+    onItemClick(e) {
+      let self = this;
+      if ('scan' === e.currentTarget.dataset.type) {
+        wepy.scanCode({
+          onlyFromCamera: true, //是否只能从相机扫码，不允许从相册选择图片,
+          success: async res => {
+            //console.log(res);
+            if('scanCode:ok'!==res.errMsg)
+            return;
+            //先根据商品条码查询当前的库里面有没有商品信息
+            let data = await findGoods(res.result)
+            if(data.info){
+              wx.showToast({
+                title: '该商品已存在',
+                icon: 'none'
+              });
+            }else{
+              //再根据barcode去第三方库查询商品信息
+              data = await getGoodsInfo(res.result)
+              if(data.status===1){
+                data.info = JSON.parse(data.info);
+                if('success' === data.info.reason){
+                  let goods = data.info.result;
+                  self.name = goods.title;
+                  self.price = goods.price;
+                  self.code = res.result;
+                  self.$apply();
+                }
+              }
+            }
+          }
+        });
+      } else if ('goods' === e.currentTarget.dataset.type) {
+        wepy.navigateTo({ url: './goods_store' });
+        
+      }
+    },
+    onInput(e) {
+      switch (e.currentTarget.dataset.type) {
+        case 'name':
+          this.name = e.detail.value;
+          break;
+        case 'code':
+          this.code = e.detail.value;
+          break;
+        case 'class':
+          this.className = e.detail.value;
+          break;
+        case 'price':
+          this.price = e.detail.value;
+          break;
+      }
+    },
+    onBrandsClick(){
+      wepy.navigateTo({ url: 'class_store' });
+    },
+    onUnitChange(e){
+      this.unit = this.units[parseInt(e.detail.value)]
+    },
+    onCateClick(){
+      this.showCate = true;
+    },
+    onCateChoose(e){
+      this.showCate = false;
+      this.cateOne = e.cateOne;
+      this.cateTwo = e.cateTwo;
+    },
+    onClose(){
+      this.showCate = false;
+    },
+    onClear(){
+      let self = this;
+        setTimeout(() => {
+          //将所有的数据清空
+          self.name = '';
+          self.brands = null;
+          self.cateOne = null;
+          self.cateTwo = null;
+          self.code = '';
+          self.unit = null;
+          self.className = '';
+          self.price = '';
+          self.$apply();
+        }, 200);
+    },
+    async onSave(){
+      if(!this.name) return;
+      if(!this.price) return;
+      if(!this.unit) return;
+      if(!this.cateOne) return;
+      if(!this.cateTwo) return;
+
+      let res = await addGoods(this.name,this.code,this.brands?this.brands.id:'',this.cateOne.id,this.cateTwo.id,this.unit.id,this.unit.name,this.className,parseInt(parseFloat(this.price)*100))
+      if(res.status===1){
+        wx.showToast({
+          title: '添加成功',
+          icon: 'none'
+        });
+      }
+    }
+  };
+  async onLoad() {
+    let res = await getUnit()
+    if(res.status===1){
+      this.units = res.info;
+      this.$apply();
+    }
+  }
+
+  onShow(){
+    if(!wepy.$instance.data.brands) return;
+    this.brands = wepy.$instance.data.brands;
+    this.$apply();
+  }
+}
+</script>

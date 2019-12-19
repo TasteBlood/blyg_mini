@@ -1,0 +1,50 @@
+<style lang="less" scoped>
+  .item{
+    padding: 20rpx;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    border-bottom: 1rpx solid #d1d1d1;
+    align-items: center;
+  }
+  .item:active{
+      background-color: #f4f4f4;
+    }
+</style>
+<template>
+    <view class="list">
+      <view class="item" wx:for='{{items}}' wx:key='{{index}}' @tap='onItemClick' data-item='{{item}}'>
+        <text>ID:{{item.id}}</text>
+        <text style="margin-left:20rpx;font-weight:bold;font-size:36rpx;">{{item.name}}</text>
+      </view>
+    </view>
+</template>
+<script>
+import wepy from 'wepy';
+import {getBrands} from '../utils/api';
+export default class ClassStore extends wepy.page {
+  config = {
+    navigationBarTitleText: '品牌库',
+    disableScroll: true
+  };
+  data = {
+    items:[]
+  };
+  methods = {
+    onItemClick(e){
+      wepy.$instance.data.brands = e.currentTarget.dataset.item;
+      wepy.navigateBack({
+        delta: 1 //返回的页面数，如果 delta 大于现有页面数，则返回到首页,
+      });
+    }
+  };
+  async onLoad() {
+    let res = await getBrands()
+    if(res.status===1){
+      //console.log(res)
+      this.items = res.info;
+      this.$apply();
+    }
+  }
+}
+</script>

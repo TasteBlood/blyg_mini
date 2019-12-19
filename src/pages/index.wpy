@@ -1,0 +1,101 @@
+<style lang="less" scoped>
+.container {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  background-color: #f4f4f4;
+  padding: 20rpx;
+  box-sizing: border-box;
+
+  .item {
+    padding: 20rpx;
+    display: flex;
+    width: 200rpx;
+    height: 200rpx;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    border-radius: 8rpx;
+    box-shadow: 0 0 8rpx 2rpx #e1e1e1;
+    font-weight: bold;
+    color: #414141;
+  }
+
+  .item:active {
+    background-color: transparent;
+  }
+
+  .bottom {
+    position: absolute;
+    bottom: 40rpx;
+    display: flex;
+    flex-direction: column;
+    line-height: 40rpx;
+    align-items: center;
+    color: #515151;
+    font-size: 24rpx;
+  }
+
+  .icon {
+    position: absolute;
+    top: 120rpx;
+    font-weight: bold;
+    color: #000000;
+    font-size: 46rpx;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+}
+</style>
+<template>
+  <view class="container">
+    <view class="item" @tap="onItemClick" data-type="goods">
+      <image src="../img/ic_goods.png" class="ic-64" mode="aspectFill">
+      <text style="margin-top:20rpx">商品采集</text>
+    </view>
+    <view class="item" style="margin-left:40rpx;" @tap="onItemClick" data-type="class">
+      <image src="../img/ic_label.png" class="ic-64" mode="aspectFill">
+      <text style="margin-top:20rpx">品牌采集</text>
+    </view>
+    <view class="icon">
+      <text>百利优购</text>
+      <text style="font-size:26rpx;margin-top:20rpx">便利于农商收银</text>
+    </view>
+    <view class="bottom">
+      <text>兰州云创意版权所有</text>
+      <text>2019 All Rights Reserved.</text>
+    </view>
+  </view>
+</template>
+
+<script>
+import wepy from 'wepy';
+export default class Index extends wepy.page {
+  config = {
+    navigationBarTitleText: '百利优购',
+    disableScroll: true
+  };
+
+  data = {};
+
+  methods = {
+    onItemClick(e) {
+      if ('goods' === e.currentTarget.dataset.type) {
+        wepy.navigateTo({ url: './goods_collect' });
+      } else if ('class' === e.currentTarget.dataset.type) {
+        wepy.navigateTo({ url: './class_collect' });
+      }
+    }
+  };
+
+  onLoad() {}
+}
+</script>

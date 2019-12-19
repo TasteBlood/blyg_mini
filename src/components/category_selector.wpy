@@ -1,0 +1,187 @@
+<style lang="less" scoped>
+.container {
+  position: fixed;
+  z-index: 10;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+
+  .content {
+    background: white;
+    width: 100%;
+    height: 600rpx;
+    border-top: 1rpx solid #212121;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+  }
+
+  .bottom-menu {
+    width: 100%;
+    height: 80rpx;
+    background-color: white;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    border-top: 1rpx solid #212121;
+  }
+
+  .list {
+    height: 600rpx;
+    width: 50%;
+    overflow-y: scroll;
+
+    .item {
+      font-size: 36rpx;
+      height: 80rpx;
+      padding-left: 20rpx;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      color: #212121;
+      border-bottom: 1rpx solid #e1e1e1;
+    }
+    .item.active {
+      font-weight: bold;
+    }
+    .item:active {
+      background-color: #f4f4f4;
+    }
+
+    .item-2 {
+      font-size: 34rpx;
+      height: 80rpx;
+      padding-left: 20rpx;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      color: #515151;
+      border-bottom: 1rpx solid #e1e1e1;
+    }
+    .item-2.active {
+      font-weight: bold;
+    }
+    .item-2:active {
+      background-color: #f4f4f4;
+    }
+  }
+
+  .btn-cancel {
+    width: 120rpx;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    background-color: #212121;
+    color: #f1f1f1;
+  }
+  .btn-cancel:active {
+    background-color: #414141;
+  }
+
+  .btn-ok {
+    width: 120rpx;
+    height: 100%;
+    color: #f1f1f1;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    background-color: #212121;
+  }
+  .btn-ok:active {
+    background-color: #414141;
+  }
+}
+</style>
+<template>
+    <cover-view class="container" wx:if="{{show}}">
+        <cover-view class="content">
+            <cover-view class="list">
+                <cover-view
+                    wx:for="{{one}}"
+                    wx:key="{{index}}"
+                    @tap="onOneClick"
+                    data-index="{{index}}"
+                    data-item="{{item}}"
+                    class="item {{index===p1?'active':''}}"
+                >{{item.name}}</cover-view>
+            </cover-view>
+            <cover-view class="list">
+                <cover-view
+                    wx:for="{{two}}"
+                    wx:key="{{index}}"
+                    @tap="onTwoClick"
+                    data-index="{{index}}"
+                    data-item="{{item}}"
+                    class="item-2 {{index===p2?'active':''}}"
+                >{{item.name}}</cover-view>
+            </cover-view>
+        </cover-view>
+        <cover-view class="bottom-menu">
+            <cover-view class="btn-cancel" @tap="onCancel">取消</cover-view>
+            <cover-view class="btn-ok" @tap="onOk">确定</cover-view>
+        </cover-view>
+    </cover-view>
+</template>
+<script>
+import wepy from 'wepy';
+import { getCategory } from '../utils/api';
+export default class CategorySelector extends wepy.component {
+  props = {
+    show: {
+      default: false,
+      type: Boolean
+    }
+  };
+  data = {
+    one: [],
+    two: [],
+    c1: null,
+    c2: null,
+    p1: null,
+    p2: null
+  };
+  methods = {
+    onOneClick(e) {
+      this.two = null;
+      this.$apply();
+      //console.log(e.currentTarget.dataset.item);
+      this.two = e.currentTarget.dataset.item.seconds;
+      this.c1 = e.currentTarget.dataset.item;
+      this.c2 = null;
+      this.p2 = null;
+      this.p1 = e.currentTarget.dataset.index;
+      this.$apply();
+    },
+    onTwoClick(e) {
+      this.c2 = e.currentTarget.dataset.item;
+      this.p2 = e.currentTarget.dataset.index;
+    },
+    onOk() {
+      if (!this.c2) {
+        wx.showToast({
+          title: '二级分类不能为空',
+          icon: 'none'
+        });
+        return;
+      }
+      this.show = false;
+      this.$emit('onCateChoose', { cateOne: this.c1, cateTwo: this.c2 });
+      this.$emit('onClose');
+    },
+    onCancel() {
+      this.show = false;
+      this.$emit('onClose');
+    }
+  };
+  async onLoad() {
+    let res = await getCategory();
+    this.one = res.info;
+    this.$apply();
+  }
+}
+</script>
