@@ -154,7 +154,7 @@
         data-type="price"
         placeholder="请输入零售价"
         placeholder-style="color:#919191"
-        type='number'
+        type='digit'
         value="{{price}}"
       >
     </view>
@@ -319,6 +319,10 @@ export default class GoodsCollect extends wepy.page {
     if(!wepy.$instance.data.brands) return;
     this.brands = wepy.$instance.data.brands;
     this.$apply();
+  }
+
+  onUnload(){
+    wepy.$instance.data.brands = null;
   }
 }
 </script>

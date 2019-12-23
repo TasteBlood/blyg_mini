@@ -12,7 +12,6 @@
     background: white;
     width: 100%;
     height: 600rpx;
-    border-top: 1rpx solid #212121;
     box-sizing: border-box;
     display: flex;
     flex-direction: row;
@@ -20,12 +19,13 @@
 
   .bottom-menu {
     width: 100%;
-    height: 80rpx;
+    height: 90rpx;
     background-color: white;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     border-top: 1rpx solid #212121;
+    box-sizing: border-box;
   }
 
   .list {
@@ -41,7 +41,7 @@
       flex-direction: row;
       align-items: center;
       color: #212121;
-      border-bottom: 1rpx solid #e1e1e1;
+      border-bottom: 1rpx solid #d1d1d1;
     }
     .item.active {
       font-weight: bold;
@@ -58,7 +58,7 @@
       flex-direction: row;
       align-items: center;
       color: #515151;
-      border-bottom: 1rpx solid #e1e1e1;
+      border-bottom: 1rpx solid #d1d1d1;
     }
     .item-2.active {
       font-weight: bold;
@@ -70,13 +70,15 @@
 
   .btn-cancel {
     width: 120rpx;
-    height: 100%;
+    height: 90rpx;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
+    line-height: 90rpx;
     background-color: #212121;
     color: #f1f1f1;
+    text-align: center;
   }
   .btn-cancel:active {
     background-color: #414141;
@@ -84,11 +86,13 @@
 
   .btn-ok {
     width: 120rpx;
-    height: 100%;
+    height: 90rpx;
+    line-height: 90rpx;
     color: #f1f1f1;
     display: flex;
     flex-direction: row;
     align-items: center;
+    text-align: center;
     justify-content: center;
     background-color: #212121;
   }
